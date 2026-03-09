@@ -55,6 +55,7 @@ export class GameManager extends Component {
 
             case GameState.TUTORIAL:
                 this.changeState(GameState.PLAYING);
+                GameManager.events.emit('player-jump');
                 break;
 
             case GameState.PLAYING:

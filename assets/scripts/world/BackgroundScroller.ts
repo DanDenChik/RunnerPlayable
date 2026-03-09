@@ -116,7 +116,9 @@ export class BackgroundScroller extends Component {
     update(dt: number) {
         if (!this._scrolling || !this._clone) return;
 
-        const dx = this.speed * dt;
+        const vh = view.getVisibleSize().height;
+        const scale = vh / 720;
+        const dx = this.speed * scale * dt;
 
         // Move both panels left
         const pos = this.node.position;

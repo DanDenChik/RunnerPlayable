@@ -254,9 +254,11 @@ export class DecorationScroller extends Component {
     update(dt: number) {
         if (!this._scrolling) return;
 
-        const scrollDist = this.speed * dt;
+        const vh = view.getVisibleSize().height;
+        const scale = vh / 720;
+        const scrollDist = this.speed * scale * dt;
         const leftEdge = -this._vw / 2 - 400;
-        const rightEdge = this._vw / 2 + 550;
+        const rightEdge = this._vw + 600;
 
         // Move all decorations left
         for (let i = this._instances.length - 1; i >= 0; i--) {
