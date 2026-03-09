@@ -55,7 +55,7 @@ export class HudManager extends Component {
         this.updateLayout();
 
         if (this.tutorialHint) {
-            this.tutorialHint.active = false;
+            this.tutorialHint.active = true;
         }
 
         GameManager.events.on('state-changed', this.onStateChanged, this);
@@ -158,6 +158,9 @@ export class HudManager extends Component {
 
     private onStateChanged(next: GameState, _prev: GameState) {
         switch (next) {
+            case GameState.RUNNING:
+                if (this.tutorialHint) this.tutorialHint.active = false;
+                break;
             case GameState.TUTORIAL:
                 if (this.tutorialHint) this.tutorialHint.active = true;
                 break;
