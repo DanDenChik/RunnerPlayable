@@ -158,22 +158,16 @@ export class HudManager extends Component {
         // ── Bottom bar ──
         this.bottomBar?.adjustLayout();
 
-        // ── Download button (bottom-right, above bottom bar) ──
+        // ── Download button (bottom-right, fixed distance from bottom) ──
         if (this.downloadBtnNode) {
             const btnW = this.designBtnWidth * s;
             const btnH = this.designBtnHeight * s;
             const margin = this.designBtnMargin * s;
 
-            const btnTransform = this.downloadBtnNode.getComponent(UITransform);
-            if (btnTransform) {
-                btnTransform.setContentSize(btnW, btnH);
-            }
-
-            // Position above bottom bar, from the right edge
-            const barH = this.bottomBar ? this.bottomBar.barHeight : 0;
+            // Position from the right edge, with a consistent bottom margin
             this.downloadBtnNode.setPosition(
                 canvasW / 2 - margin - btnW / 2,
-                -canvasH / 2 + barH + margin + btnH / 2,
+                -canvasH / 2 + margin + btnH / 2,
                 0,
             );
         }
@@ -259,6 +253,13 @@ export class HudManager extends Component {
                 const labelComp = this.gameWinScoreLabelNode.getComponent(Label);
                 const finalScore = (this.scoreDisplay as any).getScore ? (this.scoreDisplay as any).getScore() : 0;
                 if (labelComp) {
+                    // Ensure score text doesn't get cut off
+                    labelComp.overflow = Label.Overflow.SHRINK;
+                    const scoreUT = this.gameWinScoreLabelNode.getComponent(UITransform);
+                    if (scoreUT) {
+                        scoreUT.setContentSize(scoreUT.contentSize.width * 2, scoreUT.contentSize.height);
+                    }
+
                     let elapsed = 0;
                     const duration = 1.0;
                     const update = (dt: number) => {
@@ -353,6 +354,13 @@ export class HudManager extends Component {
                             const labelComp = this.gameOverScoreLabelNode.getComponent(Label);
                             const finalScore = (this.scoreDisplay as any).getScore ? (this.scoreDisplay as any).getScore() : 0;
                             if (labelComp) {
+                                // Ensure score text doesn't get cut off
+                                labelComp.overflow = Label.Overflow.SHRINK;
+                                const scoreUT = this.gameOverScoreLabelNode.getComponent(UITransform);
+                                if (scoreUT) {
+                                    scoreUT.setContentSize(scoreUT.contentSize.width * 2, scoreUT.contentSize.height);
+                                }
+
                                 let elapsed = 0;
                                 const duration = 1.0;
                                 const update = (dt: number) => {

@@ -21,7 +21,7 @@ export class BottomBar extends Component {
     @property({ type: Node, tooltip: 'Right part (stretches to fill remaining width)' })
     barRight: Node | null = null;
 
-    @property({ tooltip: 'Height of the bottom bar at the DESIGN resolution (640px high)' })
+    @property({ tooltip: 'Fixed height of the bottom bar in pixels (no adaptive scaling)' })
     designBarHeight: number = 180;
 
     /** Actual bar height after scaling */
@@ -57,13 +57,9 @@ export class BottomBar extends Component {
     adjustLayout() {
         const visibleSize = view.getVisibleSize();
         const canvasWidth = visibleSize.width;
-        const scale = visibleSize.height / DESIGN_HEIGHT;
 
-        // Scale bar height; halve in portrait mode
-        this._barHeight = this.designBarHeight * scale;
-        if (visibleSize.height > visibleSize.width) {
-            this._barHeight *= 0.5;
-        }
+        // Use a fixed bar height regardless of device size/orientation
+        this._barHeight = this.designBarHeight;
 
         // Resize own UITransform
         const selfTransform = this.getComponent(UITransform);
