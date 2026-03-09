@@ -158,18 +158,40 @@ export class HudManager extends Component {
         // ── Bottom bar ──
         this.bottomBar?.adjustLayout();
 
-        // ── Download button (bottom-right, fixed distance from bottom) ──
+        // ── Download button (bottom-right, offset from bottom HUD center) ──
         if (this.downloadBtnNode) {
-            const btnW = this.designBtnWidth * s;
-            const btnH = this.designBtnHeight * s;
+            const isPortrait = canvasH > canvasW;
             const margin = this.designBtnMargin * s;
 
-            // Position from the right edge, with a consistent bottom margin
-            this.downloadBtnNode.setPosition(
-                canvasW / 2 - margin - btnW / 2,
-                -canvasH / 2 + margin + btnH / 2,
-                0,
-            );
+            // Base desired offset from the vertical center of the bottom HUD (in px at design size)
+            const baseOffsetFromHudCenter = 16;
+            let offsetFromHudCenter = baseOffsetFromHudCenter;
+
+            // If we have a BottomBar, scale the offset proportionally to its current height
+            if (this.bottomBar) {
+                const barH = this.bottomBar.barHeight;
+                const designBarH = this.bottomBar.designBarHeight;
+                if (designBarH > 0) {
+                    offsetFromHudCenter = baseOffsetFromHudCenter * (barH / designBarH);
+                }
+            }
+
+            const barH = this.bottomBar ? this.bottomBar.barHeight : 0;
+
+            // World Y of bottom HUD center
+            const hudCenterY = -canvasH / 2 + barH / 2;
+            // Place button slightly toward the bottom from HUD center
+            const y = hudCenterY - offsetFromHudCenter;
+            // X: keep a fixed margin from the right edge (centered horizontally on its node)
+            const x = canvasW / 2 - margin;
+
+            // Scale button so its visual (and white background) scales together
+            // Portrait: 1.5x width & height; Landscape: keep width 1.0, reduce height to 0.75
+            const scaleX = isPortrait ? 1.5 : 1.0;
+            const scaleY = isPortrait ? 1.5 : 1.0;
+            this.downloadBtnNode.setScale(scaleX, scaleY, 1);
+
+            this.downloadBtnNode.setPosition(x, y, 0);
         }
 
         // Center and scale end panels so they work on any aspect ratio

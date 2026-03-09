@@ -58,8 +58,9 @@ export class BottomBar extends Component {
         const visibleSize = view.getVisibleSize();
         const canvasWidth = visibleSize.width;
 
-        // Use a fixed bar height regardless of device size/orientation
-        this._barHeight = this.designBarHeight;
+        // Use fixed bar height in landscape; 1.5x it in portrait
+        const isPortrait = visibleSize.height > visibleSize.width;
+        this._barHeight = isPortrait ? this.designBarHeight * 1.5 : this.designBarHeight * 1.0;
 
         // Resize own UITransform
         const selfTransform = this.getComponent(UITransform);
