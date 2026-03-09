@@ -15,6 +15,9 @@ export class GameManager extends Component {
     @property({ type: Number })
     private _state: GameState = GameState.IDLE;
 
+    /** True after obstacles emit 'finish-ready' to disable further jumps */
+    private _finishPhase = false;
+
     get state(): GameState { return this._state; }
 
     /* ───── lifecycle ───── */
@@ -27,6 +30,7 @@ export class GameManager extends Component {
         GameManager.instance = this;
 
         input.on(Input.EventType.TOUCH_START, this.onTouchStart, this);
+        GameManager.events.on('finish-ready', this.onFinishReady, this);
     }
 
     onDestroy() {
@@ -34,6 +38,7 @@ export class GameManager extends Component {
             GameManager.instance = null;
         }
         input.off(Input.EventType.TOUCH_START, this.onTouchStart, this);
+        GameManager.events.off('finish-ready', this.onFinishReady, this);
     }
 
     /* ───── state machine ───── */
@@ -55,12 +60,15 @@ export class GameManager extends Component {
 
             case GameState.TUTORIAL:
                 this.changeState(GameState.PLAYING);
-                GameManager.events.emit('player-jump');
+                if (!this._finishPhase) {
+                    GameManager.events.emit('player-jump');
+                }
                 break;
 
             case GameState.PLAYING:
-                // Will be used for jump later
-                GameManager.events.emit('player-jump');
+                if (!this._finishPhase) {
+                    GameManager.events.emit('player-jump');
+                }
                 break;
 
             default:
@@ -69,6 +77,11 @@ export class GameManager extends Component {
     }
 
     /* ───── public helpers ───── */
+
+    /** Called when finish line sequence should start (after last obstacle). */
+    private onFinishReady() {
+        this._finishPhase = true;
+    }
 
     /** Called by obstacle system when the first obstacle is reached */
     enterTutorial() {

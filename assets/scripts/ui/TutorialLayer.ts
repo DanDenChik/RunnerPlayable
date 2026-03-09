@@ -112,7 +112,7 @@ export class TutorialLayer extends Component {
     }
 
     private onStateChanged(next: GameState) {
-        if (next === GameState.RUNNING) {
+        if (next === GameState.RUNNING || next === GameState.TUTORIAL) {
             if (this.cursor) tween(this.cursor).stop();
             this.node.active = false;
         }

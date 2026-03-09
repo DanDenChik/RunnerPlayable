@@ -55,6 +55,7 @@ export class ObstacleSpawner extends Component {
     private _vh = 720;
     private _tutorialTriggered = false;
     private _totalSpawned = 0;
+    private _totalPassed = 0;
 
     private static readonly MAX_OBSTACLES = 5;
 
@@ -215,6 +216,11 @@ export class ObstacleSpawner extends Component {
             if (newX < leftEdge) {
                 obs.node.destroy();
                 this._obstacles.splice(i, 1);
+                this._totalPassed++;
+                if (this._totalPassed === ObstacleSpawner.MAX_OBSTACLES) {
+                    // Emit finish-ready event
+                    GameManager.events.emit('finish-ready');
+                }
             }
         }
 

@@ -101,7 +101,8 @@ export class PlayerController extends Component {
             widget.isAlignLeft = true;
             widget.left = -30;
         } else {
-            widget.isAlignLeft = false;
+            widget.isAlignLeft = true;
+            widget.left = 300;
         }
 
         widget.alignMode = Widget.AlignMode.ON_WINDOW_RESIZE;

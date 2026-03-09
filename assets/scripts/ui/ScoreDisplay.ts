@@ -1,4 +1,4 @@
-import { _decorator, Component, Label } from 'cc';
+import { _decorator, Component, Label, tween, Vec3 } from 'cc';
 
 const { ccclass, property } = _decorator;
 
@@ -10,7 +10,7 @@ export class ScoreDisplay extends Component {
     @property({ tooltip: 'Font size for score text' })
     designFontSize: number = 32;
 
-    private _score: number = 100;
+    private _score: number = 0;
     private _label: Label | null = null;
 
     onLoad() {
@@ -31,6 +31,16 @@ export class ScoreDisplay extends Component {
 
     addScore(delta: number) {
         this.setScore(this._score + delta);
+        this.pulse();
+    }
+
+    /** Quick scale pulse 1 → 1.1 → 1 on the node */
+    private pulse() {
+        const n = this.node;
+        tween(n)
+            .to(0.1, { scale: new Vec3(1.1, 1.1, 1) }, { easing: 'sineOut' })
+            .to(0.1, { scale: new Vec3(1, 1, 1) }, { easing: 'sineIn' })
+            .start();
     }
 
     getScore(): number {
